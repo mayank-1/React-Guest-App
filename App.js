@@ -45,8 +45,8 @@ class GuestForm extends React.Component {
             required
           >
             <option value="">Choose Type</option>
-            <option value="VIP GUEST">VIP</option>
-            <option value="NORMAL GUEST">Normal</option>
+            <option value="VIP">VIP</option>
+            <option value="NORMAL">Normal</option>
             <option value="CHIEF GUEST">Chief Guest</option>
           </select>
         </div>
