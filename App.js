@@ -65,18 +65,21 @@ class GuestForm extends React.Component {
 }
 
 class GuestList extends React.Component {
+  guestToDelete(id) {
+    this.props.getTheIdToDelete(id);
+  }
   render() {
     return (
-      <tr key={this.props.key}>
+      <tr key={this.props.index}>
         <td scope="row">{this.props.name}</td>
         <td>{this.props.guestType}</td>
         <td>
           <a>
-            <i class="far fa-edit text-info"></i>
+            <i className="far fa-edit text-info"></i>
           </a>
           &nbsp;&nbsp;
-          <a>
-            <i class="fa fa-trash-alt text-danger"></i>
+          <a onClick={() => this.guestToDelete(this.props.index)}>
+            <i className="fa fa-trash-alt text-danger"></i>
           </a>
         </td>
       </tr>
@@ -95,10 +98,19 @@ class Guest extends React.Component {
         {
           guests: [...this.state.guests, data]
         },
-        () => {}
+        () => {
+          console.log("GUEST:", this.state);
+        }
       );
-      console.log("GUEST:", this.state);
     }
+  }
+
+  guestToDelete(id) {
+    let updatedGuest = [...this.state.guests];
+    updatedGuest.splice(id, 1);
+    this.setState({
+      guests: updatedGuest
+    });
   }
   render() {
     return (
@@ -120,7 +132,8 @@ class Guest extends React.Component {
               {this.state.guests.map((data, index) => {
                 return (
                   <GuestList
-                    key={index}
+                    getTheIdToDelete={id => this.guestToDelete(id)}
+                    index={index}
                     name={data.name}
                     guestType={data.guestType}
                   />
