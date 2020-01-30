@@ -110,7 +110,7 @@ class Guest extends React.Component {
           <GuestForm getGuestData={data => this.getFormDataForGuests(data)} />
         </div>
         <div className="col-md-5 card mx-auto m-1 p-3 shadow col-xs-10">
-          <table class="table">
+          <table className="table table-striped">
             <thead>
               <tr>
                 <th>Name</th>
