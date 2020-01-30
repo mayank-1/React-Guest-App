@@ -71,8 +71,13 @@ class GuestList extends React.Component {
         <td scope="row">{this.props.name}</td>
         <td>{this.props.guestType}</td>
         <td>
-          <button>EDIT</button>&nbsp;
-          <button>DELETE</button>
+          <a>
+            <i class="far fa-edit text-info"></i>
+          </a>
+          &nbsp;&nbsp;
+          <a>
+            <i class="fa fa-trash-alt text-danger"></i>
+          </a>
         </td>
       </tr>
     );
