@@ -67,13 +67,6 @@ class GuestForm extends React.Component {
 class GuestList extends React.Component {
   render() {
     return (
-      // <div>
-      //   {/* <ul type="none">
-      //     <li key={this.props.key}>
-      //       {this.props.name} - {this.props.guestType}
-      //     </li>
-      //   </ul> */}
-      // </div>
       <tr key={this.props.key}>
         <td scope="row">{this.props.name}</td>
         <td>{this.props.guestType}</td>
