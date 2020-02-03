@@ -1,7 +1,8 @@
 class GuestForm extends React.Component {
   state = {
     name: "",
-    guestType: ""
+    guestType: "",
+    isEdit: false
   };
 
   changeName(name) {
@@ -23,6 +24,30 @@ class GuestForm extends React.Component {
       guestType: ""
     });
   }
+
+  updateForm() {
+    let newObject = {
+      name: this.state.name,
+      guestType: this.state.guestType,
+      isEdit: false
+    };
+    this.props.getUpdatedData(newObject);
+    this.setState({
+      name: "",
+      guestType: "",
+      isEdit: false
+    });
+  }
+
+  componentDidUpdate = (prevProps, prevState) => {
+    if (this.props.dataToEdit !== prevProps.dataToEdit) {
+      this.setState({
+        name: this.props.dataToEdit.name,
+        guestType: this.props.dataToEdit.guestType,
+        isEdit: true
+      });
+    }
+  };
 
   render() {
     return (
@@ -53,11 +78,15 @@ class GuestForm extends React.Component {
         <button
           onClick={e => {
             e.preventDefault();
-            this.submitForm();
+            if (this.state.isEdit) {
+              this.updateForm();
+            } else {
+              this.submitForm();
+            }
           }}
           className="btn btn-primary"
         >
-          ADD
+          {this.state.isEdit ? "UPDATE" : "ADD"}
         </button>
       </form>
     );
@@ -68,13 +97,17 @@ class GuestList extends React.Component {
   guestToDelete(id) {
     this.props.getTheIdToDelete(id);
   }
+  guestToEdit(id) {
+    this.props.getTheIdToEdit(id);
+  }
+
   render() {
     return (
       <tr key={this.props.index}>
         <td scope="row">{this.props.name}</td>
         <td>{this.props.guestType}</td>
         <td>
-          <a>
+          <a onClick={() => this.guestToEdit(this.props.index)}>
             <i className="far fa-edit text-info"></i>
           </a>
           &nbsp;&nbsp;
@@ -89,20 +122,27 @@ class GuestList extends React.Component {
 
 class Guest extends React.Component {
   state = {
-    guests: []
+    guests: [],
+    editGuestdata: [],
+    indexToUpdate: ""
   };
 
   getFormDataForGuests(data) {
     if (data.name && data.guestType) {
-      this.setState(
-        {
-          guests: [...this.state.guests, data]
-        },
-        () => {
-          console.log("GUEST:", this.state);
-        }
-      );
+      this.setState({
+        guests: [...this.state.guests, data]
+      });
     }
+  }
+
+  getUpdatedDataFromGuest(data) {
+    if (this.state.guests[this.state.indexToUpdate] !== data) {
+      this.state.guests[this.state.indexToUpdate] = data;
+    }
+
+    this.setState({
+      guests: this.state.guests
+    });
   }
 
   guestToDelete(id) {
@@ -112,12 +152,29 @@ class Guest extends React.Component {
       guests: updatedGuest
     });
   }
+
+  guestToEdit(id) {
+    let editData = {
+      name: this.state.guests[id].name,
+      guestType: this.state.guests[id].guestType,
+      isEdit: true
+    };
+    this.setState({
+      editGuestdata: editData,
+      indexToUpdate: id
+    });
+  }
+
   render() {
     return (
       <div className="row text-center m-2">
         <div className="col-md-5 card mx-auto shadow m-1 p-3 col-xs-10">
           <h3>Guest Form</h3>
-          <GuestForm getGuestData={data => this.getFormDataForGuests(data)} />
+          <GuestForm
+            dataToEdit={this.state.editGuestdata}
+            getGuestData={data => this.getFormDataForGuests(data)}
+            getUpdatedData={data => this.getUpdatedDataFromGuest(data)}
+          />
         </div>
         <div className="col-md-5 card mx-auto m-1 p-3 shadow col-xs-10">
           <table className="table table-striped">
@@ -133,6 +190,7 @@ class Guest extends React.Component {
                 return (
                   <GuestList
                     getTheIdToDelete={id => this.guestToDelete(id)}
+                    getTheIdToEdit={id => this.guestToEdit(id)}
                     index={index}
                     name={data.name}
                     guestType={data.guestType}
